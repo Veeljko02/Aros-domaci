@@ -6,9 +6,9 @@
 #include <semaphore.h>
 #include <time.h>
 
- #define BROJ_DIVLJAKA 5
- #define BROJ_PORCIJA 2
- #define VELICINA_PORCIJE 5
+ #define BROJ_DIVLJAKA 4
+ #define BROJ_PORCIJA 3
+ #define VELICINA_PORCIJE 3
 
 sem_t prazanLonac;
 sem_t punLonac;
@@ -17,6 +17,7 @@ void *divljak (void*);
 void *kuvar (void*);
 
 static pthread_mutex_t porcije_mutex;
+static pthread_mutex_t stampa;
 
 static int porcije = 0;
 
@@ -58,12 +59,16 @@ void *kuvar (void *id) {
     while ( i <= brojSpremanja ) {
         sem_wait (&prazanLonac);
         
-        printf ("\n-----kuvanje----\n");
+        // pthread_mutex_lock (&stampa);
+        printf ("\n.......KUVA SE.....\n");
+        // pthread_mutex_unlock (&stampa);
         
         sleep(5);
         porcije += VELICINA_PORCIJE;
   
+        // pthread_mutex_lock (&stampa);
         printf ("\n>>Kuvar je spremio %d porcija po %d. put\n", VELICINA_PORCIJE, i);
+        // pthread_mutex_unlock (&stampa);
         
         sem_post (&punLonac);
         i++;
@@ -80,7 +85,9 @@ void *divljak (void *id) {
         if (porcije == 0){
             sem_post(&prazanLonac);
             
+            //  pthread_mutex_lock (&stampa);
              printf ("Divljak %i je probudio kuvara i ceka da hrana bude gotova..\n", divljak_id+1);
+            // pthread_mutex_unlock (&stampa);
             
             sem_wait(&punLonac);
         }
@@ -89,11 +96,15 @@ void *divljak (void *id) {
 
         brojPorcija--;
 
+        // pthread_mutex_lock (&stampa);
         printf ("Divljak %i jede porciju %d\n", divljak_id+1, BROJ_PORCIJA-brojPorcija);
+        // pthread_mutex_unlock (&stampa);
 
         sleep(2);
 
+        // pthread_mutex_lock (&stampa);
         printf ("Divljak %i je pojeo  %d. porciju\n", divljak_id+1, BROJ_PORCIJA-brojPorcija);
+        // pthread_mutex_unlock (&stampa);
     }
     
 
