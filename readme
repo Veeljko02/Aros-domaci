@@ -4,7 +4,7 @@ Problem iz knjie "The little book of semaphores".
 
 Rešen pomocu semafora i mutexa.
 
-Da bi se kreirala i pokrenula aplikacija potrebno je instalirati mingw okruzenje. Zatim u windowsu Edit the system environment variables - path - kreirati C:\MinGW\bin.
+Da bi se kreirala i pokrenula aplikacija potrebno je instalirati MinGW okruzenje.
 U terminalu - C:\Users\Admin>gcc diningSavages.c -o aplikacija -lpthread (terminal se pokrece u folderu u kom se nalazi sacuvam c fajl)
 nakon pokretanja kreira se aplikacija sa nazivom "aplikacija"
 prilikom pokretanja se izvrsava kod u konzoli tj. terminalu
