@@ -17,7 +17,6 @@ void *divljak (void*);
 void *kuvar (void*);
 
 static pthread_mutex_t porcije_mutex;
-static pthread_mutex_t stampa;
 
 static int porcije = 0;
 
@@ -31,7 +30,6 @@ int main() {
 
     // inicijalizacija mutexa
     pthread_mutex_init(&porcije_mutex, NULL);
-    pthread_mutex_init(&stampa, NULL);
 
     //inicijalizacija semafora
     sem_init(&prazanLonac, 0, 0);
@@ -59,16 +57,12 @@ void *kuvar (void *id) {
     while ( i <= brojSpremanja ) {
         sem_wait (&prazanLonac);
         
-        // pthread_mutex_lock (&stampa);
         printf ("\n.......KUVA SE.....\n");
-        // pthread_mutex_unlock (&stampa);
         
-        sleep(5);
+        sleep(4);
         porcije += VELICINA_PORCIJE;
   
-        // pthread_mutex_lock (&stampa);
         printf ("\n>>Kuvar je spremio %d porcija po %d. put\n", VELICINA_PORCIJE, i);
-        // pthread_mutex_unlock (&stampa);
         
         sem_post (&punLonac);
         i++;
@@ -85,26 +79,23 @@ void *divljak (void *id) {
         if (porcije == 0){
             sem_post(&prazanLonac);
             
-            //  pthread_mutex_lock (&stampa);
              printf ("Divljak %i je probudio kuvara i ceka da hrana bude gotova..\n", divljak_id+1);
-            // pthread_mutex_unlock (&stampa);
             
             sem_wait(&punLonac);
         }
         porcije--;
+        sleep(0.5);//vreme potrebno da se porcija uzme
         pthread_mutex_unlock (&porcije_mutex);
 
         brojPorcija--;
 
-        // pthread_mutex_lock (&stampa);
+
         printf ("Divljak %i jede porciju %d\n", divljak_id+1, BROJ_PORCIJA-brojPorcija);
-        // pthread_mutex_unlock (&stampa);
 
-        sleep(2);
 
-        // pthread_mutex_lock (&stampa);
+        sleep(2);//vreme potrebno da se porcija pojede
+
         printf ("Divljak %i je pojeo  %d. porciju\n", divljak_id+1, BROJ_PORCIJA-brojPorcija);
-        // pthread_mutex_unlock (&stampa);
     }
     
 
